@@ -49,7 +49,7 @@ RUN cat /start.sh
 RUN ls -lna /start.sh
 RUN chmod +x /start.sh
 
-
+echo "hello"
 # Expose Port for the Application 
 EXPOSE 1881 9091
 
