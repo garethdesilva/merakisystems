@@ -49,7 +49,10 @@ RUN cat /start.sh
 RUN ls -lna /start.sh
 RUN chmod +x /start.sh
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d2f9cf825177c6f70e9c8e51c2c004171662c1ed
 # Expose Port for the Application 
 EXPOSE 1881 9091
 
