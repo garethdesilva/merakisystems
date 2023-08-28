@@ -11,25 +11,46 @@ LABEL description="This is a custom Docker Image for NODERED running on Ubuntu."
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Update Ubuntu Software repository
+
+
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install software-properties-common git -y
-RUN apt install nano curl iputils-ping -y
-
+RUN apt-get install software-properties-common git curl wget nano iputils-ping gpg -y
 
 # install COCKPIT
-RUN apt install cockpit -y
-RUN sudo apt install cockpit -y
-RUN sudo apt install cockpit-dashboard cockpit-storaged cockpit-networkmanager cockpit-selinux cockpit-docker cockpit-doc cockpit-kdump cockpit-kubernetes cockpit-machines cockpit-packagekit cockpit-pcp cockpit-sosreport cockpit-subscriptions cockpit-tests cockpit-ws -y
+
+
+RUN echo "finished install"
+#Installing SMB manager
+RUN wget -qO - https://repo.45drives.com/key/gpg.asc | gpg --dearmor -o /usr/share/keyrings/45drives-archive-keyring.gpg
+RUN echo "finished wget"
+RUN cd /etc/apt/sources.list.d
+RUN echo "finished directory"
+RUN curl -sSL https://repo.45drives.com/lists/45drives.sources -o /etc/apt/sources.list.d/45drives.sources
+RUN echo "finished curl"
+# RUN curl -sSL https://repo.45drives.com/setup | sudo bash
+RUN apt-get update -y
+RUN echo "finished update"
+# RUN apt install cockpit-navigator
+# RUN apt install cockpit-identities
+RUN apt install cockpit cockpit-navigator cockpit-identities cockpit-system cockpit-bridge cockpit-storaged cockpit-networkmanager cockpit-machines cockpit-packagekit cockpit-pcp cockpit-sosreport cockpit-tests cockpit-ws -y
 
 # Copy start.sh script and define default command for the container
 # COPY start.sh /start.sh
 
-RUN echo "tail -f /dev/null" > /start.sh
-RUN chmod +x /start.sh
+# create startup script for docker container
 
-CMD ["./start.sh"]
+
+RUN echo "hello"
+RUN cd /
+RUN echo \#\!/bin/bash > /start.sh
+RUN echo 'tail -f /dev/null' >> /start.sh
+RUN cat /start.sh
+RUN ls -lna /start.sh
+RUN chmod +x /start.sh
 
 
 # Expose Port for the Application 
-EXPOSE 80 443
+EXPOSE 1881 9091
+
+CMD ["./start.sh"]
