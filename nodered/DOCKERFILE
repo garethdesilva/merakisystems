@@ -51,4 +51,6 @@ RUN chmod +x /start.sh
 
 
 # Expose Port for the Application 
-EXPOSE 80 443
+EXPOSE 1881 9091
+
+CMD ["./start.sh"]
