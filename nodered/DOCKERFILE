@@ -41,7 +41,6 @@ RUN apt install cockpit cockpit-navigator cockpit-identities cockpit-system cock
 # create startup script for docker container
 
 
-RUN echo "hello"
 RUN cd /
 RUN echo \#\!/bin/bash > /start.sh
 RUN echo 'tail -f /dev/null' >> /start.sh
@@ -49,10 +48,7 @@ RUN cat /start.sh
 RUN ls -lna /start.sh
 RUN chmod +x /start.sh
 
-<<<<<<< HEAD
 
-=======
->>>>>>> d2f9cf825177c6f70e9c8e51c2c004171662c1ed
 # Expose Port for the Application 
 EXPOSE 1881 9091
 
