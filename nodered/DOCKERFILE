@@ -32,4 +32,4 @@ CMD ["./start.sh"]
 
 
 # Expose Port for the Application 
-EXPOSE 80 443
+EXPOSE 80 443 1880 9090
