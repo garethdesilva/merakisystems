@@ -47,7 +47,7 @@ services:
     #env_file:
     #  - .env
     ports:
-      - "${COMPOSE_PORT_HTTP:-9000}:${AUTHENTIK_PORT_HTTP:-9000}"
+      - "${COMPOSE_PORT_HTTP:-9000}:${AUTHENTIK_PORT_HTTP:-7000}"
       - "${COMPOSE_PORT_HTTPS:-9443}:${AUTHENTIK_PORT_HTTPS:-7443}"
     depends_on:
       postgresql:
