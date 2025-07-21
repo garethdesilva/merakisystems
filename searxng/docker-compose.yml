@@ -23,10 +23,16 @@ services:
         curl -v -fL --retry 3 \
           https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
           -o /tmp/settings.yml
+
+        echo "Init finished at $(date)"
+        // show me the permissions and ownership of the file, and send it to stdout
+        echo "Checking permissions and ownership of /data/
+
+        ls -l /data
+        ls -l /tmp/settings.yml
+
         echo "Download complete—moving file"
         mv /tmp/settings.yml /data/settings.yml
-        echo "Init finished at $(date)"
-
     volumes:
       - searxng_settings:/data
 
