@@ -36,8 +36,10 @@ services:
       - SEARXNG_BASE_URL=http://localhost:8181/ #Change "your.docker.server.ip" to your Docker server's IP
       - UWSGI_WORKERS=4 #You can change this
       - UWSGI_THREADS=4 #You can change this
-#    cap_drop:
-#      - ALL
+# comment on first run
+    cap_drop:
+# comment on first run
+      - ALL
     cap_add:
       - CHOWN
       - SETGID
