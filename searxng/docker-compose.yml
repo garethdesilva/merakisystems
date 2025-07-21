@@ -18,7 +18,7 @@ services:
         mkdir -p /tmp
         
         #echo "Fixing permissions on target volume..."
-        #chmod 0777 /data
+        #chmod 0777 /searxng_data
 
         curl -v -fL --retry 3 \
           https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
@@ -28,9 +28,9 @@ services:
         # show me the permissions and ownership of the file, and send it to stdout
         ls -l /
         echo "Download complete—moving file"
-        mv /tmp/settings.yml /data/settings.yml
+        mv /tmp/settings.yml /searxng_data/settings.yml
     volumes:
-      - searxng_settings:/data
+      - searxng_settings:/searxng_data
 
 
 
