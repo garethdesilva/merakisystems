@@ -8,13 +8,15 @@ services:
       - -c
       - |
         set -eux
-        mkdir -p /data
-        ls -ld /data
-        touch /data/.write_test
-        rm /data/.write_test
+        # Download into a safe, writable temporary folder
         curl -fL --retry 3 \
-          https://github.com/garethdesilva/merakisystems/blob/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
-          -o /data/settings.yml
+          https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
+          -o /tmp/settings.yml
+
+        # Move the file into the volume
+        mkdir -p /data
+        mv /tmp/settings.yml /data/settings.yml
+
     volumes:
       - searxng_settings:/data
 
