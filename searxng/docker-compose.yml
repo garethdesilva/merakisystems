@@ -3,7 +3,7 @@ version: "3.9"
 services:
   init-settings:
     image: alpine:3.18
-    entrypoint: |
+    entrypoint: >
       sh -c "cat <<EOF > /data/settings.yml
 search:
   formats:
