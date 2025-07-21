@@ -87,8 +87,4 @@ networks:
 volumes:
   valkey-data: #redis storage
   searxng_settings:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/docker/searxng_settings
+    external: true #This volume is created by the init-settings service
