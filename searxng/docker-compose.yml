@@ -3,14 +3,16 @@ version: "3.9"
 services:
   init-settings:
     image: alpine:3.18
-    entrypoint: >
-      sh -c "
-      cat <<EOF > /data/settings.yml
-      search:
-        formats:
-          - html
-          - json
-      EOF"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cat > /data/settings.yml <<EOF
+        search:
+          formats:
+            - html
+            - json
+        EOF
     volumes:
       - searxng_settings:/data
 
