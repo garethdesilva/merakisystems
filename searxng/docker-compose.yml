@@ -18,7 +18,7 @@ services:
         mkdir -p /tmp /data
         
         echo "Fixing permissions on target volume..."
-        chmod 0777 /data
+        #chmod 0777 /data
 
         curl -v -fL --retry 3 \
           https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
@@ -86,4 +86,9 @@ networks:
 
 volumes:
   valkey-data: #redis storage
-  searxng_settings: #searxng storage
+  searxng_settings:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/docker/searxng_settings
