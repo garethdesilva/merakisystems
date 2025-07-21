@@ -33,9 +33,9 @@ services:
     volumes:
       - searxng:/etc/searxng:rw
     environment:
-      - SEARXNG_BASE_URL: "http://localhost:8181/" #Change "your.docker.server.ip" to your Docker server's IP
-      - UWSGI_WORKERS: 4 #You can change this
-      - UWSGI_THREADS: 4 #You can change this
+      - SEARXNG_BASE_URL=http://localhost:8181/ #Change "your.docker.server.ip" to your Docker server's IP
+      - UWSGI_WORKERS=4 #You can change this
+      - UWSGI_THREADS=4 #You can change this
     cap_drop:
       - ALL
     cap_add:
