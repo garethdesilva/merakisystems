@@ -8,15 +8,14 @@ services:
       - -c
       - |
         set -eux
-        # Download into a safe, writable temporary folder
-        curl -fL --retry 3 \
+        echo "Starting download at $(date)"
+        mkdir -p /tmp /data
+        curl -v -fL --retry 3 \
           https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
           -o /tmp/settings.yml
-
-        # Move the file into the volume
-        mkdir -p /data
+        echo "Download complete—moving file"
         mv /tmp/settings.yml /data/settings.yml
-
+        echo "Init finished at $(date)"
     volumes:
       - searxng_settings:/data
 
