@@ -21,6 +21,10 @@ services:
         #chmod 0777 /searxng_data
         # delete existing settings file if it exists
         if [ -f /searxng_data/settings.yml ]; then
+          echo "Removing existing settings.yml file"
+          rm -f /searxng_data/settings.yml
+        fi  
+        
         # change ownership of the /searxng_data directory to the current user
         chown -R $(id -u):$(id -g) /searxng_data
 
