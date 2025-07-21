@@ -15,9 +15,9 @@ services:
       - |
         set -eux
         echo "Starting download at $(date)"
-        mkdir -p /tmp /data
+        mkdir -p /tmp
         
-        echo "Fixing permissions on target volume..."
+        #echo "Fixing permissions on target volume..."
         #chmod 0777 /data
 
         curl -v -fL --retry 3 \
