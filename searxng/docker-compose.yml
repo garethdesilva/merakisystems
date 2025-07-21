@@ -8,29 +8,72 @@ services:
       - -c
       - |
         set -eux
-        #echo "Starting download at $(date)"
-        #mkdir -p /tmp /data
-        #curl -v -fL --retry 3 \
-        #  https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
-        #  -o /tmp/settings.yml
-        #echo "Download complete—moving file"
-        #mv /tmp/settings.yml /data/settings.yml
-        #echo "Init finished at $(date)"
-        #touch /data/initialized
+        echo "Starting download at $(date)"
+        mkdir -p /tmp /data
+        curl -v -fL --retry 3 \
+          https://raw.githubusercontent.com/garethdesilva/merakisystems/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
+          -o /tmp/settings.yml
+        echo "Download complete—moving file"
+        mv /tmp/settings.yml /data/settings.yml
+        echo "Init finished at $(date)"
+
     volumes:
       - searxng_settings:/data
 
-  searxng:
-    image: searxng/searxng:latest
-    depends_on:
-      init-settings:
-        condition: service_completed_successfully
-    ports:
-      - "8181:8080"
+
+
+  redis:
+    container_name: redis
+    image: docker.io/valkey/valkey:8-alpine
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: unless-stopped
+    networks:
+      - searxng
     volumes:
-      - searxng_settings:/etc/searxng/
+      - valkey-data:/data
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    networks:
+      - searxng
+    ports:
+      - "8181:8080" #change 8181 as needed, but not 8080
+    volumes:
+      - searxng_settings:/etc/searxng:rw
     environment:
-      - BIND_ADDRESS=0.0.0.0:8080
+      - SEARXNG_BASE_URL=http://localhost:8181/ #Change "your.docker.server.ip" to your Docker server's IP
+      - UWSGI_WORKERS=4 #You can change this
+      - UWSGI_THREADS=4 #You can change this
+# comment on first run
+    cap_drop:
+# comment on first run
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+networks:
+  searxng:
 
 volumes:
-  searxng_settings:
+  valkey-data: #redis storage
+  searxng_settings: #searxng storage
