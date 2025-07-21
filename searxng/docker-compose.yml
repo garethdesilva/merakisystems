@@ -2,17 +2,15 @@ version: "3.9"
 
 services:
   init-settings:
-    image: alpine:3.18
+    image: curlimages/curl:8.2.1
     entrypoint:
       - /bin/sh
       - -c
       - |
-        cat > /data/settings.yml <<EOF
-        search:
-          formats:
-            - html
-            - json
-        EOF
+        set -eux
+        curl -fsSL \
+          https://github.com/garethdesilva/merakisystems/main/searxng/settings.yml \
+          -o /data/settings.yml
     volumes:
       - searxng_settings:/data
 
