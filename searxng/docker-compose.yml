@@ -3,6 +3,9 @@ version: "3.9"
 services:
   init-settings:
     image: curlimages/curl:8.2.1
+    cap_add:
+      - FOWNER
+      - DAC_OVERRIDE
     entrypoint:
       - /bin/sh
       - -c
