@@ -87,4 +87,4 @@ networks:
 volumes:
   valkey-data: #redis storage
   searxng_settings:
-    external: true #This volume is created by the init-settings service
+  #  external: true #This volume is created by the init-settings service
