@@ -5,6 +5,9 @@ services:
     image: curlimages/curl:8.2.1
     cap_add:
       - FOWNER
+      - CHOWN
+      - SETGID
+      - SETUID
       - DAC_OVERRIDE
     entrypoint:
       - /bin/sh
