@@ -25,12 +25,9 @@ services:
           -o /tmp/settings.yml
 
         echo "Init finished at $(date)"
-        // show me the permissions and ownership of the file, and send it to stdout
+        # show me the permissions and ownership of the file, and send it to stdout
         echo "Checking permissions and ownership of /data/
-
-        ls -l /data
-        ls -l /tmp/settings.yml
-
+        echo "ls -l"
         echo "Download complete—moving file"
         mv /tmp/settings.yml /data/settings.yml
     volumes:
