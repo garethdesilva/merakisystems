@@ -8,7 +8,8 @@ services:
       - -c
       - |
         set -eux
-        curl -fsSL \
+        mkdir -p /data
+        curl -fsSL --retry 3 \
           https://github.com/garethdesilva/merakisystems/blob/ca0af9f3dc845f510a6414055ff8889a53ef3a2b/searxng/settings.yml \
           -o /data/settings.yml
     volumes:
@@ -28,3 +29,10 @@ services:
 
 volumes:
   searxng_settings:
+
+
+
+
+
+
+
