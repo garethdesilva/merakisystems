@@ -3,6 +3,14 @@ version: "3.9"
 services:
   init-settings:
     image: curlimages/curl:8.2.1
+    # The `cap_add` section is used to add specific Linux capabilities to the container.
+    # These capabilities allow the container to perform certain privileged operations:
+    # - FOWNER: Overrides file ownership restrictions.
+    # - CHOWN: Allows changing file ownership.
+    # - SETGID: Allows setting group ID.
+    # - SETUID: Allows setting user ID.
+    # - DAC_OVERRIDE: Overrides discretionary access control checks.
+    # Use these capabilities cautiously as they can increase the container's privileges.
     cap_add:
       - FOWNER
       - CHOWN
@@ -24,7 +32,7 @@ services:
           echo "Removing existing settings.yml file"
           rm -f /searxng_data/settings.yml
         fi  
-        
+
         # change ownership of the /searxng_data directory to the current user
         chown -R $(id -u):$(id -g) /searxng_data
 
