@@ -49,6 +49,9 @@ services:
     ports:
       - "${COMPOSE_PORT_HTTP:-9000}:9000"
       - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    networks:
+      - default
+      - nginx_proxy_manager_default
     depends_on:
       postgresql:
         condition: service_healthy
@@ -90,3 +93,7 @@ volumes:
     driver: local
   redis:
     driver: local
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
