@@ -77,6 +77,7 @@ services:
     restart: unless-stopped
     networks:
       - searxng
+      - nginx_proxy_manager_default
     ports:
       - "8181:8080" #change 8181 as needed, but not 8080
     volumes:
@@ -101,6 +102,8 @@ services:
 
 networks:
   searxng:
+  nginx_proxy_manager_default:
+    external: true
 
 volumes:
   valkey-data: #redis storage
