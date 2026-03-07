@@ -8,7 +8,7 @@ services:
     ports:
       - "${HOMEPAGE_PORT:-3000}:3000"
     volumes:
-      - homepage_config:/app/config
+      - homepage_logs:/app/config/logs
       - /var/run/docker.sock:/var/run/docker.sock:ro
     configs:
       - source: services
@@ -28,7 +28,7 @@ services:
       - nginx_proxy_manager_default
 
 volumes:
-  homepage_config:
+  homepage_logs:
 
 configs:
   services:
