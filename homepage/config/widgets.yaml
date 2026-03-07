@@ -17,5 +17,5 @@
 
 - search:
     provider: custom
-    url: https://search.merakisystems.com/search?q=
+    url: https://google.merakisystems.com/search?q=
     target: _blank

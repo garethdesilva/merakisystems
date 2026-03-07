@@ -14,7 +14,7 @@
         container: portainer
         widget:
           type: portainer
-          url: https://gate1.merakisystems.com
+          url: http://portainer:9000
           env: 2
           key: {{HOMEPAGE_VAR_PORTAINER_API_KEY}}
 
