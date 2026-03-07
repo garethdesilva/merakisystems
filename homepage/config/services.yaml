@@ -1,0 +1,79 @@
+- Infrastructure:
+    - Nginx Proxy Manager:
+        icon: nginx-proxy-manager.png
+        href: https://npm.merakisystems.com
+        description: Reverse Proxy
+        server: my-docker
+        container: nginx_proxy_manager-app-1
+
+    - Portainer:
+        icon: portainer.png
+        href: https://portainer.merakisystems.com
+        description: Container Management
+        server: my-docker
+        container: portainer
+        widget:
+          type: portainer
+          url: https://portainer.merakisystems.com
+          env: 2
+          key: {{HOMEPAGE_VAR_PORTAINER_API_KEY}}
+
+    - Authentik:
+        icon: authentik.png
+        href: https://auth.merakisystems.com
+        description: Identity Provider
+        server: my-docker
+        container: authentik-server-1
+        widget:
+          type: authentik
+          url: https://auth.merakisystems.com
+          key: {{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}
+
+- Mail:
+    - Mailcow:
+        icon: mailcow.png
+        href: https://mail.merakisystems.com
+        description: Mail Server
+        server: my-docker
+        container: mailcowdockerized-nginx-mailcow-1
+        widget:
+          type: mailcow
+          url: https://mail.merakisystems.com
+          key: {{HOMEPAGE_VAR_MAILCOW_API_KEY}}
+
+- Applications:
+    - SearXNG:
+        icon: searxng.png
+        href: https://search.merakisystems.com
+        description: Private Search Engine
+        server: my-docker
+        container: searxng
+
+    - Open WebUI:
+        icon: open-webui.png
+        href: https://ai.merakisystems.com
+        description: AI Interface
+        server: my-docker
+        container: open-webui
+
+    - Node-RED:
+        icon: node-red.png
+        href: https://nodered.merakisystems.com
+        description: Flow Automation
+        server: my-docker
+        container: node-red
+
+    - LibreSpeed:
+        icon: librespeed.png
+        href: https://speed.merakisystems.com
+        description: Speed Test
+        server: my-docker
+        container: librespeed
+
+- Backup:
+    - Backrest:
+        icon: https://raw.githubusercontent.com/garethgeorge/backrest/main/webui/public/logo192.png
+        href: https://backrest.merakisystems.com
+        description: Restic Backup Manager
+        server: my-docker
+        container: restic-gui-backrest

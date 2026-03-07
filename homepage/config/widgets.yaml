@@ -1,0 +1,21 @@
+- resources:
+    label: Host
+    cpu: true
+    memory: true
+    disk: /
+    cputemp: true
+    uptime: true
+    units: metric
+    refresh: 3000
+
+- datetime:
+    text_size: xl
+    format:
+      dateStyle: long
+      timeStyle: short
+      hour12: false
+
+- search:
+    provider: custom
+    url: https://search.merakisystems.com/search?q=
+    target: _blank

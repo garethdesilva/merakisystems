@@ -1,0 +1,21 @@
+title: Meraki Systems
+background:
+  blur: sm
+  brightness: 50
+cardBlur: sm
+theme: dark
+color: slate
+headerStyle: clean
+layout:
+  Infrastructure:
+    style: row
+    columns: 4
+  Mail:
+    style: row
+    columns: 2
+  Applications:
+    style: row
+    columns: 4
+  Backup:
+    style: row
+    columns: 2
