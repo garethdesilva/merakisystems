@@ -1,16 +1,26 @@
 ---
 
 services:
+  homepage-config:
+    image: alpine
+    restart: no
+    volumes:
+      - ./config:/config-src:ro
+      - /opt/homepage/config:/config-dst
+    command: sh -c "cp /config-src/* /config-dst/"
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     restart: unless-stopped
+    depends_on:
+      homepage-config:
+        condition: service_completed_successfully
     ports:
       - "${HOMEPAGE_PORT:-3000}:3000"
     volumes:
       - /opt/homepage/config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
     environment:
       PUID: ${PUID:-1000}
       PGID: ${PGID:-1000}
@@ -18,7 +28,6 @@ services:
     networks:
       - default
       - nginx_proxy_manager_default
-
 
 networks:
   nginx_proxy_manager_default:
