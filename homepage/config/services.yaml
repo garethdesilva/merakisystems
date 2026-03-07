@@ -1,7 +1,7 @@
 - Infrastructure:
     - Nginx Proxy Manager:
         icon: nginx-proxy-manager.png
-        href: https://npm.merakisystems.com
+        href: https://proxy.merakisystems.com
         description: Reverse Proxy
         server: my-docker
         container: nginx_proxy_manager-app-1
