@@ -11,9 +11,7 @@ services:
   app:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
-    depends_on:
-      config-sync:
-        condition: service_completed_successfully
+
     ports:
       - "${NPM_BIND_IP}:80:80"
       - "${NPM_BIND_IP}:443:443"
