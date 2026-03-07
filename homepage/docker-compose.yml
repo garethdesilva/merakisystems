@@ -1,14 +1,30 @@
 ---
 
 services:
+  config-sync:
+    image: alpine/git
+    restart: no
+    volumes:
+      - homepage_config:/config
+    environment:
+      GIT_REPO: ${GIT_REPO}
+    command: >
+      sh -c "git clone --depth 1 --filter=blob:none --sparse $$GIT_REPO /tmp/repo &&
+             cd /tmp/repo &&
+             git sparse-checkout set homepage/config &&
+             cp -r /tmp/repo/homepage/config/. /config/"
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     restart: unless-stopped
+    depends_on:
+      config-sync:
+        condition: service_completed_successfully
     ports:
       - "${HOMEPAGE_PORT:-3000}:3000"
     volumes:
-      - /var/lib/docker/volumes/portainer_data/_data/compose/146/homepage/config:/app/config
+      - homepage_config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       PUID: ${PUID:-1000}
@@ -17,6 +33,9 @@ services:
     networks:
       - default
       - nginx_proxy_manager_default
+
+volumes:
+  homepage_config:
 
 networks:
   nginx_proxy_manager_default:
