@@ -9,9 +9,7 @@ services:
     environment:
       GIT_REPO: ${GIT_REPO}
     command: >
-      sh -c "git clone --depth 1 --filter=blob:none --sparse $$GIT_REPO /tmp/repo &&
-             cd /tmp/repo &&
-             git sparse-checkout set homepage/config &&
+      sh -c "git clone --depth 1 $$GIT_REPO /tmp/repo &&
              cp -r /tmp/repo/homepage/config/. /config/"
 
   homepage:
