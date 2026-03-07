@@ -8,13 +8,13 @@
 
     - Portainer:
         icon: portainer.png
-        href: https://portainer.merakisystems.com
+        href: https://gate1.merakisystems.com
         description: Container Management
         server: my-docker
         container: portainer
         widget:
           type: portainer
-          url: https://portainer.merakisystems.com
+          url: https://gate1.merakisystems.com
           env: 2
           key: {{HOMEPAGE_VAR_PORTAINER_API_KEY}}
 
@@ -44,7 +44,7 @@
 - Applications:
     - SearXNG:
         icon: searxng.png
-        href: https://search.merakisystems.com
+        href: https://google.merakisystems.com
         description: Private Search Engine
         server: my-docker
         container: searxng
@@ -65,7 +65,7 @@
 
     - LibreSpeed:
         icon: librespeed.png
-        href: https://speed.merakisystems.com
+        href: https://speedtest.merakisystems.com
         description: Speed Test
         server: my-docker
         container: librespeed
