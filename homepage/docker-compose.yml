@@ -8,8 +8,17 @@ services:
     ports:
       - "${HOMEPAGE_PORT:-3000}:3000"
     volumes:
-      - ./config:/app/config
+      - homepage_config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    configs:
+      - source: services
+        target: /app/config/services.yaml
+      - source: settings
+        target: /app/config/settings.yaml
+      - source: widgets
+        target: /app/config/widgets.yaml
+      - source: docker_cfg
+        target: /app/config/docker.yaml
     environment:
       PUID: ${PUID:-1000}
       PGID: ${PGID:-1000}
@@ -17,6 +26,19 @@ services:
     networks:
       - default
       - nginx_proxy_manager_default
+
+volumes:
+  homepage_config:
+
+configs:
+  services:
+    file: ./config/services.yaml
+  settings:
+    file: ./config/settings.yaml
+  widgets:
+    file: ./config/widgets.yaml
+  docker_cfg:
+    file: ./config/docker.yaml
 
 networks:
   nginx_proxy_manager_default:
