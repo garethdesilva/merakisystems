@@ -7,7 +7,7 @@ services:
     volumes:
       - ./config:/config-src:ro
       - /opt/homepage/config:/config-dst
-    command: sh -c "cp /config-src/* /config-dst/"
+    command: sh -c "mkdir -p /config-dst && cp -r /config-src/. /config-dst/"
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
