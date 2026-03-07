@@ -2,14 +2,13 @@
 
 services:
   config-sync:
-    image: alpine/git
+    image: alpine
     restart: no
     volumes:
       - homepage_config:/config
     environment:
       GIT_REPO: ${GIT_REPO}
-    entrypoint: ["sh", "-c"]
-    command: "git clone --depth 1 $$GIT_REPO /tmp/repo && cp -r /tmp/repo/homepage/config/. /config/"
+    command: sh -c "apk add --no-cache git -q && git clone --depth 1 $$GIT_REPO /tmp/repo && cp -r /tmp/repo/homepage/config/. /config/"
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
