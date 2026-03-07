@@ -39,7 +39,7 @@
         widget:
           type: mailcow
           url: https://mail.merakisystems.com
-          key: {{HOMEPAGE_VAR_MAILCOW_API_KEY}}
+          key: ${{HOMEPAGE_VAR_MAILCOW_API_KEY}}
 
 - Applications:
     - SearXNG:
