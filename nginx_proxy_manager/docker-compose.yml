@@ -1,23 +1,27 @@
 services:
+  config-sync:
+    image: alpine
+    restart: no
+    volumes:
+      - nginx_custom:/config
+    environment:
+      GIT_REPO: ${GIT_REPO}
+    command: sh -c "apk add --no-cache git -q && git clone --depth 1 $$GIT_REPO /tmp/repo && mkdir -p /config && cp /tmp/repo/nginx_proxy_manager/custom/http.conf /config/http.conf"
+
   app:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
+    depends_on:
+      config-sync:
+        condition: service_completed_successfully
     ports:
-      # These ports are in format <host-port>:<container-port>
-      - "${NPM_BIND_IP}:80:80" # Public HTTP Port
-      - "${NPM_BIND_IP}:443:443" # Public HTTPS Port
-      - "${NPM_BIND_IP}:81:81" # Admin Web Port
-      # Add any other Stream port you want to expose
-      # - '21:21' # FTP
-
-    #environment:
-      # Uncomment this if you want to change the location of
-      # the SQLite DB file within the container
-      # DB_SQLITE_FILE: "/data/database.sqlite"
-
-      # Uncomment this if IPv6 is not enabled on your host
-      # DISABLE_IPV6: 'true'
-
+      - "${NPM_BIND_IP}:80:80"
+      - "${NPM_BIND_IP}:443:443"
+      - "${NPM_BIND_IP}:81:81"
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
+      - nginx_custom:/data/nginx/custom
+
+volumes:
+  nginx_custom:
