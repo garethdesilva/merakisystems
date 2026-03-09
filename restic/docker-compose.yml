@@ -128,7 +128,14 @@ services:
       - B2_ACCOUNT_KEY=${B2_ACCOUNT_KEY}
     ports:
       - "9898:9898"
+    networks:
+      - default
+      - nginx_proxy_manager_default
     restart: unless-stopped
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
 
 volumes:
   backrest-data:
