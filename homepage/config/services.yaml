@@ -70,10 +70,9 @@
         server: my-docker
         container: librespeed
 
-- Backup:
-    - Backrest:
-        icon: https://raw.githubusercontent.com/garethgeorge/backrest/main/webui/public/logo192.png
-        href: https://backup.merakisystems.com
-        description: Restic Backup Manager
+    - Homarr:
+        icon: homarr.png
+        href: https://homarr.merakisystems.com
+        description: Dashboard
         server: my-docker
-        container: restic-gui-backrest
+        container: homarr
