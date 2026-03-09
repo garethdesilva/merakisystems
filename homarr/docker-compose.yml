@@ -1,0 +1,22 @@
+---
+
+services:
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
+    restart: unless-stopped
+    ports:
+      - "${HOMARR_PORT:-7575}:7575"
+    volumes:
+      - ./data/configs:/app/data/configs
+      - ./data/icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
+    networks:
+      - default
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
