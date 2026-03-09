@@ -88,6 +88,19 @@ services:
       redis:
         condition: service_healthy
 
+  ldap:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/ldap}:${AUTHENTIK_TAG:-2025.8}
+    restart: unless-stopped
+    environment:
+      AUTHENTIK_HOST: http://server:9000
+      AUTHENTIK_INSECURE: "true"
+      AUTHENTIK_TOKEN: ${LDAP_OUTPOST_TOKEN}
+    networks:
+      - default
+      - mailcowdockerized_mailcow-network
+    depends_on:
+      - server
+
 volumes:
   database:
     driver: local
@@ -96,4 +109,6 @@ volumes:
 
 networks:
   nginx_proxy_manager_default:
+    external: true
+  mailcowdockerized_mailcow-network:
     external: true
