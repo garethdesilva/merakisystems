@@ -17,7 +17,7 @@ services:
       ENABLE_OAUTH_SIGNUP: "true"
       OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
       OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
-      OPENID_PROVIDER_URL: "https://auth.merakisystems.com/application/o/openwebui/.well-known/openid-configuration"
+      OPENID_PROVIDER_URL: "https://auth.merakisystems.com/application/o/open-web-ui/.well-known/openid-configuration"
       OAUTH_PROVIDER_NAME: "Authentik"
       OAUTH_SCOPES: "openid email profile"
     networks:
