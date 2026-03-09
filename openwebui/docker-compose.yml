@@ -1,6 +1,7 @@
 services:
   openwebui:
     image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
     ports:
       - "3000:8080"
     volumes:
@@ -10,6 +11,16 @@ services:
       RAG_WEB_SEARCH_ENGINE: "searxng"
       RAG_WEB_SEARCH_RESULT_COUNT: 3
       RAG_WEB_SEARCH_CONCURRENT_REQUESTS: 10
-      SEARXNG_QUERY_URL: "http://95.179.178.83:8181/search?q=<query>"
+      SEARXNG_QUERY_URL: "http://searxng:8080/search?q=<query>"
+      OPENAI_API_BASE_URL: "https://openrouter.ai/api/v1"
+      OPENAI_API_KEY: ${OPENROUTER_API_KEY}
+    networks:
+      - default
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
+
 volumes:
   open-webui:
