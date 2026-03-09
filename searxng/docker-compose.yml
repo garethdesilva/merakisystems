@@ -83,7 +83,7 @@ services:
     volumes:
       - searxng_settings:/etc/searxng:rw
     environment:
-      - SEARXNG_BASE_URL=http://localhost:8181/ #Change "your.docker.server.ip" to your Docker server's IP
+      - SEARXNG_BASE_URL=https://google.merakisystems.com/
       - UWSGI_WORKERS=4 #You can change this
       - UWSGI_THREADS=4 #You can change this
 # comment on first run
