@@ -1,0 +1,56 @@
+{
+  "modno": 8,
+  "version": 4,
+  "instance": "backup-${INSTANCE_NAME}-restic-gui-backrest",
+  "repos": [
+    {
+      "id": "${INSTANCE_NAME}-b2",
+      "uri": "b2:${B2_BUCKET_NAME}",
+      "guid": "f886550c70b8a78b9eefbcd4b2c0ea5a85420ef94f2555648692fd857afbd895",
+      "password": "${RESTIC_PASSWORD}",
+      "env": [
+        "B2_ACCOUNT_ID=${B2_ACCOUNT_ID}",
+        "B2_ACCOUNT_KEY=${B2_ACCOUNT_KEY}"
+      ],
+      "prunePolicy": {
+        "schedule": {
+          "maxFrequencyDays": 14,
+          "clock": "CLOCK_LOCAL"
+        },
+        "maxUnusedPercent": 10
+      },
+      "checkPolicy": {
+        "schedule": {
+          "maxFrequencyDays": 7,
+          "clock": "CLOCK_LOCAL"
+        },
+        "readDataSubsetPercent": 1
+      },
+      "commandPrefix": {
+        "ioNice": "IO_BEST_EFFORT_LOW",
+        "cpuNice": "CPU_LOW"
+      }
+    }
+  ],
+  "plans": [
+    {
+      "id": "${INSTANCE_NAME}-docker-b2",
+      "repo": "${INSTANCE_NAME}-b2",
+      "paths": [
+        "/userdata/"
+      ],
+      "schedule": {
+        "maxFrequencyHours": 12,
+        "clock": "CLOCK_LOCAL"
+      },
+      "retention": {
+        "policyTimeBucketed": {
+          "hourly": 24,
+          "daily": 30,
+          "monthly": 12,
+          "keepLastN": 15
+        }
+      }
+    }
+  ]
+}

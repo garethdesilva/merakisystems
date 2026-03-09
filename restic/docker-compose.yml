@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+
+  # backup:
+  #   image: mazzolino/restic
+  #   container_name: restic
+  #   hostname: ${HOSTNAME}
+  #   environment:
+  #     HOSTNAME: ${HOSTNAME:-restic}
+  #     RUN_ON_STARTUP: "true" #change as you wish
+  #     BACKUP_CRON: "0 */12 * * *" #this is twice daily, i.e., every 12 hours
+  #     RESTIC_REPOSITORY: /restic
+  #     RESTIC_PASSWORD: ${RESTIC_PASSWORD} #your-restic-password
+  #     RESTIC_BACKUP_SOURCES: /mnt/volumes
+  #     RESTIC_COMPRESSION: auto 
+  #     #add tags, whatever you need to mark backups
+  #     RESTIC_BACKUP_ARGS: >- 
+  #       --tag restic 
+  #       --verbose
+  #     RESTIC_FORGET_ARGS: >- #change as required
+  #       --keep-last 10
+  #       --keep-daily 7
+  #       --keep-weekly 5
+  #       --keep-monthly 12
+  #     TZ: Etc/UTC #change to your timezone
+  #   volumes:
+  #     - /home/dockeras/meraki/restic_docker_backup:/restic #change the left hand side to where you want to store the backups. As you can see I'm storing it on my NAS that is mounted to the host /home/truenas
+  #     # the above path is mounted from the host to the container, so you can access the backups from the host
+  #     - /home/dockeras/meraki/restic_docker_backup/tmp_for_restore:/tmp-for-restore #USE THIS FOLDER FOR RESTORE - CAN VIEW EACH CONTAINER
+  #     - /var/lib/docker/volumes:/mnt/volumes:ro #change the left hand side to where your docker volumes are stored, this is where the containers will be backed up from
+  #   security_opt:
+  #     - no-new-privileges:true
+
+  # prune:
+  #   image: mazzolino/restic
+  #   container_name: restic-prune
+  #   hostname: ${HOSTNAME}
+  #   environment:
+  #     RUN_ON_STARTUP: "true"
+  #     PRUNE_CRON: "0 0 4 * * *"
+  #     RESTIC_REPOSITORY: /restic
+  #     RESTIC_PASSWORD: ${RESTIC_PASSWORD} #your-restic-password
+  #     TZ: Etc/UTC
+  #   security_opt:
+  #     - no-new-privileges:true
+
+  # check:
+  #   image: mazzolino/restic
+  #   container_name: restic-check
+  #   hostname: ${HOSTNAME}
+  #   environment:
+  #     RUN_ON_STARTUP: "false"
+  #     CHECK_CRON: "0 15 5 * * *"
+  #     RESTIC_CHECK_ARGS: >-
+  #       --read-data-subset=10%
+  #     RESTIC_REPOSITORY: /restic
+  #     RESTIC_PASSWORD: ${RESTIC_PASSWORD} #your-restic-password
+  #     TZ: Etc/UTC
+  #   security_opt:
+  #     - no-new-privileges:true
+
+
+# https://${GIT_PERSONAL_ACCESS_TOKEN}@github.com/garethdesilva/deployments.git
+        #mkdir -p /config/github
+        #cd /shared/github/clone
+        #git sparse-checkout set restic
+        #tail -f /dev/null
+  downloader:
+    image: alpine:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache git gettext
+        rm -rf /config/github
+        mkdir -p /config/github
+        git clone --depth 1 --filter=blob:none --sparse https://${GIT_PERSONAL_ACCESS_TOKEN}@github.com/garethdesilva/deployments.git /config/github/clone
+        cd /config/github/clone
+        git sparse-checkout set restic
+        #env
+        VARS_TO_SUBST='$${B2_BUCKET_NAME} $${RESTIC_PASSWORD} $${B2_ACCOUNT_ID} $${B2_ACCOUNT_KEY} $${INSTANCE_NAME}'
+        #echo "DEBUG: Substituting the following variables: $VARS_TO_SUBST"
+        envsubst "$$VARS_TO_SUBST" < /config/github/clone/restic/gui-backrest/config.json > /config/config.json
+        #echo "DEBUG: Final config.json contents:"
+        #cat /config/config.json
+        
+
+    volumes:
+      - backrest-config:/config
+    environment:
+      - GIT_PERSONAL_ACCESS_TOKEN=${GIT_PERSONAL_ACCESS_TOKEN}
+      - RESTIC_PASSWORD=${RESTIC_PASSWORD}
+      - B2_BUCKET_NAME=${B2_BUCKET_NAME}
+      - B2_ACCOUNT_ID=${B2_ACCOUNT_ID}
+      - B2_ACCOUNT_KEY=${B2_ACCOUNT_KEY}
+      - INSTANCE_NAME=${INSTANCE_NAME}
+
+
+
+
+  backrest:
+    image: garethgeorge/backrest:latest
+    container_name: restic-gui-backrest
+
+    depends_on:
+      downloader:
+        condition: service_completed_successfully
+    hostname: ${HOSTNAME}
+    volumes:
+      - backrest-data:/data
+      - backrest-config:/config
+      - backrest-cache:/cache
+      - backrest-tmp:/tmp
+      - ./backrest/rclone:/root/.config/rclone # Mount for rclone config (needed when using rclone remotes)
+      - /var/lib/docker/volumes:/userdata:ro  # Mount local paths to backup
+      - /home/dockeras/meraki/restic_docker_backup:/repos     # Mount local repos (optional for remote storage)
+      - /var/lib/docker/volumes/backup_restore:/restore # Folder for restore operations
+    environment:
+      - BACKREST_DATA=/data
+      - BACKREST_CONFIG=/config/config.json
+      - XDG_CACHE_HOME=/cache
+      - TMPDIR=/tmp
+      - TZ=Etc/UTC
+      - RESTIC_PASSWORD=${RESTIC_PASSWORD}
+      - B2_BUCKET_NAME=${B2_BUCKET_NAME}
+      - B2_ACCOUNT_ID=${B2_ACCOUNT_ID}
+      - B2_ACCOUNT_KEY=${B2_ACCOUNT_KEY}
+    ports:
+      - "9898:9898"
+    restart: unless-stopped
+
+volumes:
+  backrest-data:
+  backrest-config:
+  backrest-cache:
+  backrest-tmp:
