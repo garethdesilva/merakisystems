@@ -17,8 +17,8 @@ services:
       - "${NPM_BIND_IP}:443:443"
       - "${NPM_BIND_IP}:81:81"
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /data/compose/82/nginx_proxy_manager/data:/data
+      - /data/compose/82/nginx_proxy_manager/letsencrypt:/etc/letsencrypt
       - nginx_custom:/data/nginx/custom
 
 volumes:
