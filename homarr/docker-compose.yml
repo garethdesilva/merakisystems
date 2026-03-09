@@ -14,7 +14,6 @@ services:
     environment:
       SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
     networks:
-      - default
       - nginx_proxy_manager_default
 
 networks:
