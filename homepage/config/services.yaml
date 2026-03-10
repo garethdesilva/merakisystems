@@ -76,3 +76,11 @@
         description: Dashboard
         server: my-docker
         container: homarr
+
+- Backup:
+    - Backrest:
+        icon: https://raw.githubusercontent.com/garethgeorge/backrest/main/webui/public/logo192.png
+        href: https://backup.merakisystems.com
+        description: Restic Backup Manager
+        server: my-docker
+        container: restic-gui-backrest
