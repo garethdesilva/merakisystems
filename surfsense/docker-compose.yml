@@ -1,0 +1,121 @@
+---
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-surfsense}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-surfsense}
+    volumes:
+      - surfsense-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-surfsense} -d ${POSTGRES_DB:-surfsense}"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+    networks:
+      - default
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server --save 30 1 --loglevel warning
+    volumes:
+      - surfsense-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+    networks:
+      - default
+
+  backend:
+    image: modsetter/surfsense-backend:${SURFSENSE_VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      AUTH_TYPE: LOCAL
+      REGISTRATION_ENABLED: "false"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-surfsense}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-surfsense}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-openai://text-embedding-3-small}
+      OPENAI_API_KEY: ${OPENROUTER_API_KEY}
+      OPENAI_BASE_URL: https://openrouter.ai/api/v1
+      ETL_SERVICE: ${ETL_SERVICE:-DOCLING}
+      NEXT_PUBLIC_FASTAPI_BACKEND_URL: https://surfsense-api.merakisystems.com
+    networks:
+      - default
+      - nginx_proxy_manager_default
+      - searxng_searxng
+
+  celery-worker:
+    image: modsetter/surfsense-backend:${SURFSENSE_VERSION:-latest}
+    restart: unless-stopped
+    command: celery -A app.celery_app worker --loglevel=info
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-surfsense}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-surfsense}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-openai://text-embedding-3-small}
+      OPENAI_API_KEY: ${OPENROUTER_API_KEY}
+      OPENAI_BASE_URL: https://openrouter.ai/api/v1
+      ETL_SERVICE: ${ETL_SERVICE:-DOCLING}
+    networks:
+      - default
+      - searxng_searxng
+
+  celery-beat:
+    image: modsetter/surfsense-backend:${SURFSENSE_VERSION:-latest}
+    restart: unless-stopped
+    command: celery -A app.celery_app beat --loglevel=info
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-surfsense}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-surfsense}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    networks:
+      - default
+
+  frontend:
+    image: modsetter/surfsense-frontend:${SURFSENSE_VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_FASTAPI_BACKEND_URL: https://surfsense-api.merakisystems.com
+      NEXT_PUBLIC_ETL_SERVICE: ${ETL_SERVICE:-DOCLING}
+    networks:
+      - default
+      - nginx_proxy_manager_default
+
+volumes:
+  surfsense-db:
+  surfsense-redis:
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
+  searxng_searxng:
+    external: true

@@ -4,7 +4,13 @@
       "WebSearch",
       "Bash(dig:*)",
       "Bash(openssl:*)",
-      "Bash(nslookup:*)"
+      "Bash(nslookup:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.surfsense.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:surfsense.com)"
     ]
   }
 }
